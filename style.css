@@ -1,0 +1,92 @@
+html > * { box-sizing: border-box; }
+
+body {
+  font-family: 'Helvetica', 'Open Sans', sans-serif;
+  background: #458588;
+  color: #282828;
+}
+
+#timer {
+  position: absolute;
+  top: 10vw;
+  left: 5vw;
+  width: 60%;
+  color: #83a598;
+  font-size: 20vw;
+  padding: 5vw;
+}
+
+#gang {
+  position: absolute;
+  right: 5vw;
+  top: 5vw;
+  height: 70%;
+  overflow: auto;
+}
+
+#gang_list li {
+  border-radius: 10px;
+  background: #fbf1c7;
+  box-shadow: 0px 5px 0 rgba(0, 0, 0, 0.4);
+  padding: 1vw;
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #928374;
+}
+
+#controls {
+  padding: 5vw;
+  font-size: 20px;
+}
+
+li#new_member {
+  background: #b16286;
+}
+
+#in_new_member {
+  border: 0;
+  outline: none;
+  background: none;
+  color: #ebdbb2;
+  font-size: 20px;
+}
+
+#in_minutes {
+  border: 0;
+  outline: 0;
+  background: none;
+  border-bottom: 3px solid #282828;
+  font-size: 20px;
+  width: 50px;
+  text-align: center;
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
+}
+
+#btn_start, #btn_reset {
+  border-radius: 20px;
+  font-size: 4vw;
+  padding: 1vw;
+  width: 40%;
+}
+
+#btn_start {
+  position: absolute;
+  left: 5vw;
+  bottom: 5vw;
+  background: #b8bb26;
+  border-color: #b8bb26;
+}
+
+#btn_reset {
+  position: absolute;
+  right: 5vw;
+  bottom: 5vw;
+  background: #fb4934;
+  border-color: #fb4934;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+}
