@@ -40,11 +40,13 @@ window.onload = function () {
 
     if (members.length >= 2) {
       var nm = members.length;
-      var driver = members[cycle % nm];
-      var nav = members[(cycle+1) % nm];
+      var nav = members[cycle % nm];
+      var driver = members[(cycle+1) % nm];
 
       div_driver.textContent = driver.textContent;
       div_navigator.textContent = nav.textContent;
+      div_driver.className = '';
+      div_navigator.className = '';
       body_txt = 'Driver: '+driver.textContent+', Navigator: '+nav.textContent;
 
       members.forEach(function (v) {v.className = ''});
@@ -55,15 +57,21 @@ window.onload = function () {
     return body_txt;
   };
 
+  var scream = function () {
+    var body_txt = updatePair();
+    if (notify) {
+      var notification = new Notification('Rotate Pair!', {'body':body_txt});
+      // TODO: Onclick continues...
+    }
+    div_scream.className = 'scream';
+    div_scream.textContent = body_txt;
+  };
+
   var updateCycle = function () {
     if (seconds % (set_minutes * 60) === 0) {
       resetSeconds();
       pause('Continue');
-      var body_txt = updatePair();
-      if (notify) {
-        var notification = new Notification('Rotate Pair!', {'body':body_txt});
-        // TODO: Onclick continues...
-      }
+      scream();
       cycle++;
     }
     div_cycle.textContent = 'Cycle #' + cycle;
@@ -81,6 +89,7 @@ window.onload = function () {
   var unpause = function () {
     paused = false;
     btn_start.textContent = 'Pause';
+    div_scream.className = 'hide';
   };
 
   var pause = function (txt) {
@@ -98,6 +107,9 @@ window.onload = function () {
   var reset = function () {
     running = false;
     btn_start.textContent = 'Start';
+    div_scream.className = 'hide';
+    div_driver.className = 'hide';
+    div_navigator.className = 'hide';
     resetSeconds();
   };
 
@@ -142,8 +154,7 @@ window.onload = function () {
     }
   });
 
-  div_scream.className = 'hide';
-  resetSeconds();
+  reset();
   updateTimer();
   update();
 
