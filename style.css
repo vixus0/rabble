@@ -1,27 +1,38 @@
-html > * { box-sizing: border-box; }
+html { 
+  box-sizing: border-box; 
+  overflow: hidden;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
 
 body {
   font-family: 'Helvetica', 'Open Sans', sans-serif;
   background: #458588;
   color: #282828;
+  padding: 0;
+  margin: 0;
 }
 
 #timer {
-  position: absolute;
-  top: 10vw;
-  left: 5vw;
-  width: 60%;
+  padding: 3vw;
   color: #83a598;
-  font-size: 20vw;
-  padding: 5vw;
+  font-size: 35vh;
+  line-height: 60%;
 }
 
 #gang {
-  position: absolute;
-  right: 5vw;
-  top: 5vw;
-  height: 70%;
-  overflow: auto;
+  float: right;
+  width: 30%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+#gang_list {
+  padding: 3vw;
+  text-align: left;
 }
 
 #gang_list li {
@@ -31,11 +42,12 @@ body {
   padding: 1vw;
   font-size: 20px;
   margin-bottom: 10px;
+  position: relative;
 }
 
 #controls {
-  padding: 5vw;
-  font-size: 20px;
+  padding: 3vw;
+  font-size: 5vh;
 }
 
 li#new_member {
@@ -48,6 +60,7 @@ li#new_member {
   background: none;
   color: #ebdbb2;
   font-size: 20px;
+  width: 100%;
 }
 
 #in_minutes {
@@ -55,32 +68,36 @@ li#new_member {
   outline: 0;
   background: none;
   border-bottom: 3px solid #282828;
-  font-size: 20px;
+  font-size: 5vh;
   width: 50px;
   text-align: center;
+  color: #ebdbb2;
   -moz-appearance: textfield;
   -webkit-appearance: none;
+}
+
+#buttons {
+  position: absolute;
+  bottom: 0;
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
 }
 
 #btn_start, #btn_reset {
   border-radius: 20px;
   font-size: 4vw;
   padding: 1vw;
-  width: 40%;
+  flex-grow: 1;
+  margin: 3vw;
 }
 
 #btn_start {
-  position: absolute;
-  left: 5vw;
-  bottom: 5vw;
   background: #b8bb26;
   border-color: #b8bb26;
 }
 
 #btn_reset {
-  position: absolute;
-  right: 5vw;
-  bottom: 5vw;
   background: #fb4934;
   border-color: #fb4934;
 }
@@ -112,22 +129,9 @@ ul {
 }
 
 #cycle {
+  padding: 3vw;
+  font-size: 5vh;
   color: #83a598;
-}
-
-#info {
-  position: absolute;
-  bottom: 15vw;
-  left: 5vw;
-  font-size: 30px;
-}
-
-#driver::before {
-  content: 'Driver: ';
-}
-
-#navigator::before {
-  content: 'Navigator: ';
 }
 
 #gang_list li.driver {
@@ -139,13 +143,23 @@ ul {
 }
 
 .driver::before {
-  content: 'D ';
+  content: 'D';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1vw;
   font-weight: bold;
   color: #d79921;
 }
 
 .navigator::before {
-  content: 'N ';
+  content: 'N';
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 1vw;
   font-weight: bold;
   color: #689d6a;
 }

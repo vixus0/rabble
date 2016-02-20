@@ -9,8 +9,6 @@ window.onload = function () {
     div_project = document.getElementById('project'),
     div_timer = document.getElementById('timer'),
     div_cycle = document.getElementById('cycle');
-    div_driver = document.getElementById('driver');
-    div_navigator = document.getElementById('navigator');
     div_scream = document.getElementById('screamout');
 
   var set_minutes = parseFloat(in_minutes.value);
@@ -43,10 +41,6 @@ window.onload = function () {
       var nav = members[cycle % nm];
       var driver = members[(cycle+1) % nm];
 
-      div_driver.textContent = driver.textContent;
-      div_navigator.textContent = nav.textContent;
-      div_driver.className = '';
-      div_navigator.className = '';
       body_txt = 'Driver: '+driver.textContent+', Navigator: '+nav.textContent;
 
       members.forEach(function (v) {v.className = ''});
@@ -108,8 +102,6 @@ window.onload = function () {
     running = false;
     btn_start.textContent = 'Start';
     div_scream.className = 'hide';
-    div_driver.className = 'hide';
-    div_navigator.className = 'hide';
     resetSeconds();
   };
 
