@@ -50,9 +50,9 @@ window.onload = function () {
       var driver_id = (cycle+1) % nm;
       navigator = members[navigator_id];
       driver = members[driver_id];
-      members.forEach(function (v,i) { memberEl(i).className = '' });
-      memberEl(driver_id).className = 'driver';
-      memberEl(navigator_id).className = 'navigator';
+      members.forEach(function (v,i) { memberEl(i).classList.remove('driver', 'navigator') });
+      memberEl(driver_id).classList.add('driver');
+      memberEl(navigator_id).classList.add('navigator');
     }
   };
 
@@ -61,7 +61,8 @@ window.onload = function () {
     if (members.length >= 2) {
       body_txt = 'Driver: '+driver+', Navigator: '+navigator;
     }
-    div_scream.className = 'scream';
+    div_scream.classList.add('scream');
+    div_scream.classList.remove('hide');
     div_scream.textContent = body_txt;
 
     if (notify) {
@@ -86,7 +87,7 @@ window.onload = function () {
     members.forEach(function (name, id) {
       var li = document.createElement('li');
       li.textContent = name;
-      li.className = 'member_item';
+      li.classList.add('member_item');
       li.setAttribute('draggable', 'true');
       li.setAttribute('id', 'member-'+id);
 
@@ -113,7 +114,7 @@ window.onload = function () {
   var unpause = function () {
     paused = false;
     btn_start.textContent = 'Pause';
-    div_scream.className = 'hide';
+    div_scream.classList.add('hide');
   };
 
   var pause = function (txt) {
@@ -131,7 +132,7 @@ window.onload = function () {
   var reset = function () {
     running = false;
     btn_start.textContent = 'Start';
-    div_scream.className = 'hide';
+    div_scream.classList.add('hide');
     resetSeconds();
   };
 
@@ -185,7 +186,7 @@ window.onload = function () {
 
   document.addEventListener('dragstart', function (e) {
     dragged = e.target;
-    if (dragged.className === 'member_item') {
+    if (dragged.classList.contains('member_item')) {
       name = members[memberId(dragged)];
       e.dataTransfer.setData('text/plain', name);
       e.dataTransfer.setDragImage(dragged, 0, 0);
@@ -195,7 +196,7 @@ window.onload = function () {
 
   document.addEventListener('dragend', function (e) {
     dragged = e.target;
-    if (dragged.className === 'member_item') {
+    if (dragged.classList.contains('member_item')) {
       dragged.style.opacity = '';
     }
   });
@@ -206,14 +207,14 @@ window.onload = function () {
 
   document.addEventListener('dragenter', function (e) {
     var target = e.target;
-    if (target.className === 'member_item' && target != dragged) {
+    if (target.classList.contains('member_item') && target != dragged) {
       target.style.marginBottom = '30px';
     }
   });
 
   document.addEventListener('dragleave', function (e) {
     var target = e.target;
-    if (target.className === 'member_item' && target != dragged) {
+    if (target.classList.contains('member_item') && target != dragged) {
       target.style.marginBottom = '';
     }
   });
@@ -222,7 +223,7 @@ window.onload = function () {
     e.preventDefault();
     e.stopPropagation();
     var target = e.target;
-    if (target.className === 'member_item' && target != dragged) {
+    if (target.classList.contains('member_item') && target != dragged) {
       var name = e.dataTransfer.getData('text/plain');
       var dragged_id = memberId(dragged);
       var target_id = memberId(target);
