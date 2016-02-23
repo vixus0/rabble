@@ -1,8 +1,7 @@
 window.onload = function () {
-  var 
+  var
     in_minutes = document.getElementById('in_minutes'),
     in_new_member = document.getElementById('in_new_member'),
-    li_new_member = document.getElementById('new_member'),
     btn_start = document.getElementById('btn_start'),
     btn_reset = document.getElementById('btn_reset'),
     ul_gang = document.getElementById('gang_list'),
@@ -17,8 +16,18 @@ window.onload = function () {
   var paused = false;
   var notify = false;
 
+  var driver, navigator;
+
   var seconds = 0;
   var cycle = 0;
+
+  var memberId = function(el) {
+    return parseInt(el.getAttribute('id').replace('member-',''));
+  };
+
+  var memberEl = function(id) {
+    return document.getElementById('member-'+id);
+  }
 
   var resetSeconds = function () {
     set_minutes = parseFloat(in_minutes.value);
@@ -34,41 +43,62 @@ window.onload = function () {
   };
 
   var updatePair = function () {
-    var body_txt = '';
-
+    console.log(members);
     if (members.length >= 2) {
       var nm = members.length;
-      var nav = members[cycle % nm];
-      var driver = members[(cycle+1) % nm];
-
-      body_txt = 'Driver: '+driver.textContent+', Navigator: '+nav.textContent;
-
-      members.forEach(function (v) {v.className = ''});
-      driver.className = 'driver';
-      nav.className = 'navigator';
+      var navigator_id = cycle % nm;
+      var driver_id = (cycle+1) % nm;
+      navigator = members[navigator_id];
+      driver = members[driver_id];
+      members.forEach(function (v,i) { memberEl(i).className = '' });
+      memberEl(driver_id).className = 'driver';
+      memberEl(navigator_id).className = 'navigator';
     }
-
-    return body_txt;
   };
 
   var scream = function () {
-    var body_txt = updatePair();
-    if (notify) {
-      var notification = new Notification('Rotate Pair!', {'body':body_txt});
-      // TODO: Onclick continues...
+    var body_txt = 'Get more mobbers';
+    if (members.length >= 2) {
+      body_txt = 'Driver: '+driver+', Navigator: '+navigator;
     }
     div_scream.className = 'scream';
     div_scream.textContent = body_txt;
+
+    if (notify) {
+      var notification = new Notification('Rotate Pair!', {'body':body_txt});
+    }
   };
 
   var updateCycle = function () {
     if (seconds % (set_minutes * 60) === 0) {
       resetSeconds();
       pause('Continue');
+      updatePair();
       scream();
       cycle++;
     }
     div_cycle.textContent = 'Cycle #' + cycle;
+  };
+
+  var updateList = function () {
+    while (ul_gang.firstChild) ul_gang.removeChild(ul_gang.firstChild);
+
+    members.forEach(function (name, id) {
+      var li = document.createElement('li');
+      li.textContent = name;
+      li.className = 'member_item';
+      li.setAttribute('draggable', 'true');
+      li.setAttribute('id', 'member-'+id);
+
+      // Double click - delete
+      li.addEventListener('dblclick', function () {
+        var el_id = memberId(li);
+        members.splice(el_id, 1);
+        updateList();
+      });
+
+      ul_gang.appendChild(li);
+    });
   };
 
   var update = function () {
@@ -108,7 +138,7 @@ window.onload = function () {
   btn_start.addEventListener('click', function () {
     if (running) {
       if (paused) {
-        unpause(); 
+        unpause();
       } else {
         pause();
       }
@@ -131,18 +161,9 @@ window.onload = function () {
   in_new_member.addEventListener('change', function () {
     var name = in_new_member.value.trim();
     if (name) {
-      var li = document.createElement('li');
-      li.textContent = name;
-      li.setAttribute('data-id', ''+members.length);
-      members.push(li);
       in_new_member.value = '';
-      ul_gang.insertBefore(li, li_new_member);
-
-      li.addEventListener('dblclick', function (e) {
-        var id = parseInt(li.getAttribute('data-id'));
-        members.splice(id, 1);
-        ul_gang.removeChild(li);
-      });
+      members.push(name);
+      updateList();
     }
   });
 
@@ -159,4 +180,61 @@ window.onload = function () {
       });
     }
   }
-}; 
+
+  var dragged;
+
+  document.addEventListener('dragstart', function (e) {
+    dragged = e.target;
+    if (dragged.className === 'member_item') {
+      name = members[memberId(dragged)];
+      e.dataTransfer.setData('text/plain', name);
+      e.dataTransfer.setDragImage(dragged, 0, 0);
+      dragged.style.opacity = 0.5;
+    }
+  });
+
+  document.addEventListener('dragend', function (e) {
+    dragged = e.target;
+    if (dragged.className === 'member_item') {
+      dragged.style.opacity = '';
+    }
+  });
+
+  document.addEventListener('dragover', function (e) {
+    e.preventDefault();
+  });
+
+  document.addEventListener('dragenter', function (e) {
+    var target = e.target;
+    if (target.className === 'member_item' && target != dragged) {
+      target.style.marginBottom = '30px';
+    }
+  });
+
+  document.addEventListener('dragleave', function (e) {
+    var target = e.target;
+    if (target.className === 'member_item' && target != dragged) {
+      target.style.marginBottom = '';
+    }
+  });
+
+  document.addEventListener('drop', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var target = e.target;
+    if (target.className === 'member_item' && target != dragged) {
+      var name = e.dataTransfer.getData('text/plain');
+      var dragged_id = memberId(dragged);
+      var target_id = memberId(target);
+      if (dragged_id > target_id) {
+        members.splice(dragged_id, 1);
+        members.splice(target_id+1, 0, name);
+      } else {
+        members.splice(target_id+1, 0, name);
+        members.splice(dragged_id, 1);
+      }
+      target.style.marginBottom = '';
+      updateList();
+    }
+  });
+};

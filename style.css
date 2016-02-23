@@ -28,14 +28,14 @@ body {
   height: 100%;
   background: rgba(0, 0, 0, 0.2);
   text-align: center;
+  padding: 3vw;
 }
 
 #gang_list {
-  padding: 3vw;
   text-align: left;
 }
 
-#gang_list li {
+#gang_list li, #in_new_member {
   border-radius: 10px;
   background: #fbf1c7;
   box-shadow: 0px 5px 0 rgba(0, 0, 0, 0.4);
@@ -50,16 +50,12 @@ body {
   font-size: 5vh;
 }
 
-li#new_member {
-  background: #b16286;
-}
-
 #in_new_member {
   border: 0;
   outline: none;
-  background: none;
+  display: block;
+  background: #b16286;
   color: #ebdbb2;
-  font-size: 20px;
   width: 100%;
 }
 
