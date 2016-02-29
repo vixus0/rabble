@@ -43,7 +43,6 @@ window.onload = function () {
   };
 
   var updatePair = function () {
-    console.log(members);
     if (members.length >= 2) {
       var nm = members.length;
       var navigator_id = cycle % nm;
@@ -136,7 +135,7 @@ window.onload = function () {
     resetSeconds();
   };
 
-  btn_start.addEventListener('click', function () {
+  var hitStart = function () {
     if (running) {
       if (paused) {
         unpause();
@@ -146,7 +145,9 @@ window.onload = function () {
     } else {
       start();
     }
-  });
+  };
+
+  btn_start.addEventListener('click', hitStart);
 
   btn_reset.addEventListener('click', function () {
     reset();
@@ -184,6 +185,13 @@ window.onload = function () {
 
   var dragged;
 
+  document.body.addEventListener('keyup', function (e) {
+    if (e.keyCode === 32) {
+      e.preventDefault();
+      hitStart();
+    }
+  });
+
   document.addEventListener('dragstart', function (e) {
     dragged = e.target;
     if (dragged.classList.contains('member_item')) {
@@ -202,12 +210,16 @@ window.onload = function () {
   });
 
   document.addEventListener('dragover', function (e) {
-    e.preventDefault();
+    var target = e.target;
+    if (target.classList.contains('member_item') && target != dragged) {
+      e.preventDefault();
+    }
   });
 
   document.addEventListener('dragenter', function (e) {
     var target = e.target;
     if (target.classList.contains('member_item') && target != dragged) {
+      e.preventDefault();
       target.style.marginBottom = '30px';
     }
   });
@@ -221,7 +233,6 @@ window.onload = function () {
 
   document.addEventListener('drop', function (e) {
     e.preventDefault();
-    e.stopPropagation();
     var target = e.target;
     if (target.classList.contains('member_item') && target != dragged) {
       var name = e.dataTransfer.getData('text/plain');
@@ -236,6 +247,7 @@ window.onload = function () {
       }
       target.style.marginBottom = '';
       updateList();
+      updateCycle();
     }
   });
 };

@@ -29,6 +29,7 @@ body {
   background: rgba(0, 0, 0, 0.2);
   text-align: center;
   padding: 3vw;
+  z-index: 10;
 }
 
 #gang_list {
@@ -107,9 +108,9 @@ ul {
 #screamout {
   position: absolute;
   top: 0;
-  left: 0;
+  right: 30%;
   padding: 5vw;
-  width: 100%;
+  width: 70%;
   height: 100%;
 }
 
