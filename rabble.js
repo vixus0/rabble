@@ -1,6 +1,7 @@
 window.onload = function () {
   var
     in_minutes = document.getElementById('in_minutes'),
+    in_break = document.getElementById('in_break'),
     in_new_member = document.getElementById('in_new_member'),
     btn_start = document.getElementById('btn_start'),
     btn_reset = document.getElementById('btn_reset'),
@@ -11,6 +12,7 @@ window.onload = function () {
     div_scream = document.getElementById('screamout');
 
   var set_minutes = parseFloat(in_minutes.value);
+  var set_break = parseInt(in_break.value);
   var members = [];
   var running = false;
   var paused = false;
@@ -56,16 +58,27 @@ window.onload = function () {
   };
 
   var scream = function () {
-    var body_txt = 'Get more mobbers';
-    if (members.length >= 2) {
-      body_txt = 'Driver: '+driver+', Navigator: '+navigator;
+    var scream_title;
+    div_scream.classList.remove('hide', 'break', 'scream');
+    if (cycle > 0 && cycle % set_break == 0) {
+      div_scream.classList.add('break');
+      scream_title = 'Why not take a break?';
+    } else {
+      div_scream.classList.add('scream');
+      scream_title = 'Rotate!';
     }
-    div_scream.classList.add('scream');
-    div_scream.classList.remove('hide');
-    div_scream.textContent = body_txt;
+
+    var scream_body;
+    if (members.length >= 2) {
+      scream_body = 'Driver: '+driver+', Navigator: '+navigator;
+    } else {
+      scream_body = 'Get more mobbers!';
+    }
+
+    div_scream.innerHTML = scream_title + '<br><br>' + scream_body;
 
     if (notify) {
-      var notification = new Notification('Rotate Pair!', {'body':body_txt});
+      var notification = new Notification(scream_title, {'body':scream_body});
     }
   };
 
@@ -157,6 +170,12 @@ window.onload = function () {
     if (!running) {
       resetSeconds();
       updateTimer();
+    }
+  });
+
+  in_break.addEventListener('change', function () {
+    if (!running) {
+      set_break = parseInt(in_break.value);
     }
   });
 

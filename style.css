@@ -18,7 +18,7 @@ body {
 #timer {
   padding: 3vw;
   color: #83a598;
-  font-size: 35vh;
+  font-size: 20vw;
   line-height: 60%;
 }
 
@@ -48,7 +48,20 @@ body {
 
 #controls {
   padding: 3vw;
-  font-size: 5vh;
+  font-size: 2vw;
+}
+
+#controls input[type=number] {
+  border: 0;
+  outline: 0;
+  background: none;
+  border-bottom: 3px solid #282828;
+  font-size: inherit;
+  width: 8vw;
+  text-align: center;
+  color: #ebdbb2;
+  -moz-appearance: textfield;
+  -webkit-appearance: none;
 }
 
 #in_new_member {
@@ -58,19 +71,6 @@ body {
   background: #b16286;
   color: #ebdbb2;
   width: 100%;
-}
-
-#in_minutes {
-  border: 0;
-  outline: 0;
-  background: none;
-  border-bottom: 3px solid #282828;
-  font-size: 5vh;
-  width: 15vh;
-  text-align: center;
-  color: #ebdbb2;
-  -moz-appearance: textfield;
-  -webkit-appearance: none;
 }
 
 #buttons {
@@ -112,22 +112,38 @@ ul {
   padding: 5vw;
   width: 70%;
   height: 100%;
+  font-size: 6vw;
 }
 
 .hide {
   display: none;
 }
 
+@keyframes pulse-orange {
+  0%   { background-color: #fe8019; }
+  100% { background-color: #d65d0e; }
+}
+
+@keyframes pulse-green {
+  0%   { background-color: #98971a; }
+  100% { background-color: #b8bb26; }
+}
+
 #screamout.scream {
-  background: #fe8019;
   color: #fabd2f;
   font-weight: bold;
-  font-size: 10vw;
+  animation: pulse-orange 1s 10;
+}
+
+#screamout.break {
+  color: #fabd2f;
+  font-weight: bold;
+  animation: pulse-green 3s infinite alternate;
 }
 
 #cycle {
   padding: 3vw;
-  font-size: 5vh;
+  font-size: 5vw;
   color: #83a598;
 }
 
