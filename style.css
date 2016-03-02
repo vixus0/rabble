@@ -132,7 +132,7 @@ ul {
 #screamout.scream {
   color: #fabd2f;
   font-weight: bold;
-  animation: pulse-orange 1s 10;
+  animation: pulse-orange 1s infinite;
 }
 
 #screamout.break {
