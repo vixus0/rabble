@@ -1,17 +1,18 @@
 window.onload = function () {
   function isRunning() { 
-    return ('RABBLE_RUN' in window)? window.RABBLE_RUN : false;
+    return ('running' in this)? this.running : false;
   }
 
   function setRunning(bool) { 
-    window.RABBLE_RUN = bool;
+    this.running = bool;
   }
 
   function updateTimer(seconds) {
     var div_timer = document.getElementById('timer');
     var mins = Math.floor(seconds / 60);
     var secs = seconds % 60;
-    div_timer.textContent = mins + ':' + (secs < 10)? '0' + secs : secs;
+    secs = (secs < 10)? '0'+secs : secs;
+    div_timer.textContent = mins + ':' + secs;
   }
 
   function updateCycle(cycle) {
@@ -20,17 +21,48 @@ window.onload = function () {
 
   function updateStartButton(text, action) {
     var btn_start = document.getElementById('btn_start');
-    btn_start.textContent = text;
-    btn_start.removeEventListener('click');
+    if (btn_start.clickListener) {
+      btn_start.removeEventListener('click', btn_start.clickListener);
+    }
     btn_start.addEventListener('click', action);
+    btn_start.clickListener = action;
+    btn_start.textContent = text;
   }
 
-  function memberId(el) {
-    return parseInt(el.getAttribute('id').replace('member-',''));
+  function screamBreak() {
+    var div_scream = document.getElementById('screamout');
+    div_scream.classList.remove('hide');
+    div_scream.classList.add('break');
+    div_scream.textContent = 'Take a break, mobbers. You\'ve earned it.';
   }
 
-  function memberEl(id) {
-    return document.getElementById('member-'+id);
+  function screamNext(next_driver) {
+    var div_scream = document.getElementById('screamout');
+    div_scream.classList.remove('hide');
+    div_scream.classList.add('scream');
+    div_scream.textContent = 'ROTATE! '+next_driver+', you\'re up.';
+  }
+
+  function hideScream() {
+    document.getElementById('screamout').classList.remove('break', 'scream');
+    document.getElementById('screamout').classList.add('hide');
+  }
+
+  function nextDriver() {
+    var ul_members = document.getElementById('members');
+    if (ul_members.childNodes.length == 0) {
+      return 'Mobber';
+    }
+    var current_el = document.getElementById('current-driver');
+    var next_el;
+    if (current_el) {
+      next_el = current_el.nextSibling || ul_members.firstChild;
+      current_el.removeAttribute('id');
+    } else {
+      next_el = ul_members.firstChild;
+    }
+    next_el.setAttribute('id', 'current-driver');
+    return next_el.textContent;
   }
 
   function getSetSeconds() {
@@ -43,284 +75,132 @@ window.onload = function () {
   };
 
   function init() {
-    var btn_start = document.getElementById('btn_start');
+    var current_driver = document.getElementById('current-driver');
+    if (current_driver) current_driver.removeAttribute('id');
+    this.seconds = 0;
+    this.cycle = 0;
+    setRunning(false);
+    hideScream();
     updateStartButton('Start', start);
+    updateTimer(0);
+    updateCycle(0);
+  }
+
+  function attach() {
+    var new_member = document.getElementById('new-member');
+    new_member.addEventListener('change', 
+      function (e) {
+        var name = e.target.value.trim()
+        if (name) addMember(name);
+        e.target.value = '';
+      });
+
+    var btn_reset = document.getElementById('btn_reset');
+    btn_reset.addEventListener('click', stop);
   }
 
   function unpause() {
-     
+    setRunning(true);
+    updateStartButton('Pause', pause);
   }
 
   function pause() {
     setRunning(false);
+    updateStartButton('Unpause', unpause);
   }
 
   function stop() {
-    setRunning(false);
+    init();
   }
 
   function start() {
-    setRunning(true);
-    update(0, 0);
+    nextCycle();
   }
 
-  function update(current_cycle, elapsed_seconds) {
-    var cycle_seconds = getSetSeconds();
-    var break_cycles = getBreakCycles();
+  function breakTime() {
+    setRunning(false);
+    screamBreak();
+    updateStartButton('Back to Work', function () {
+      hideScream();
+      unpause();
+    });
+  }
 
-    if (elapsed_seconds > cycle_seconds) {
-      current_cycle += 1;
-      elapsed_seconds = 0;
+  function nextCycle() {
+    setRunning(false);
+    screamNext(nextDriver());
+    updateStartButton('I\'m Ready', function () {
+      hideScream();
+      unpause();
+    });
+  }
 
-      if (current_cycle % break_cycles == 0) {
-        breakTime();
-      } else {
-        nextCycle();
-      }
-    }
-
+  function update() {
     if (isRunning()) {
-      elapsed_seconds += 1;
-    }
+      if (this.seconds > getSetSeconds()) {
+        this.cycle += 1;
+        this.seconds = 0;
 
-    window.setTimeout(update, 1000, current_cycle, elapsed_seconds);
-  }
+        updateCycle(this.cycle);
 
-  var
-    in_break = document.getElementById('in_break'),
-    in_new_member = document.getElementById('in_new_member'),
-    btn_reset = document.getElementById('btn_reset'),
-    ul_gang = document.getElementById('gang_list'),
-    div_scream = document.getElementById('screamout'),
-
-    set_minutes = parseFloat(in_minutes.value),
-    set_break = parseInt(in_break.value),
-    members = [],
-    running = false,
-    paused = false,
-    notify = false,
-    seconds = 0,
-    cycle = 0
-    driver, 
-    navigator
-    ;
-
-  var updatePair = function () {
-    if (members.length >= 2) {
-      var nm = members.length;
-      var driver_id = cycle % nm;
-      driver = members[driver_id];
-      members.forEach(function (v,i) { memberEl(i).classList.remove('driver', 'navigator') });
-      memberEl(driver_id).classList.add('driver');
-      // navigator = members[navigator_id];
-      // memberEl(navigator_id).classList.add('navigator');
-    }
-  };
-
-  var scream = function () {
-    var scream_title;
-    div_scream.classList.remove('hide', 'break', 'scream');
-    if (cycle > 0 && cycle % set_break == 0) {
-      div_scream.classList.add('break');
-      scream_title = 'Why not take a break?';
-    } else {
-      div_scream.classList.add('scream');
-      scream_title = 'Rotate!';
-    }
-
-    var scream_body;
-    if (members.length >= 2) {
-      scream_body = 'Driver: '+driver+', Navigator: '+navigator;
-    } else {
-      scream_body = 'Get more mobbers!';
-    }
-
-    div_scream.innerHTML = scream_title + '<br><br>' + scream_body;
-
-    if (notify) {
-      var notification = new Notification(scream_title, {'body':scream_body});
-      notification.addEventListener('click', function () {
-        hitStart();
-      })
-    }
-  }
-
-  var updateList = function () {
-    while (ul_gang.firstChild) ul_gang.removeChild(ul_gang.firstChild)
-
-    members.forEach(function (name, id) {
-      var li = document.createElement('li')
-      li.textContent = name
-      li.classList.add('member_item')
-      li.setAttribute('draggable', 'true')
-      li.setAttribute('id', 'member-'+id)
-
-      // Double click - delete
-      li.addEventListener('dblclick', function () {
-        var el_id = memberId(li)
-        members.splice(el_id, 1)
-        updateList()
-      })
-
-      ul_gang.appendChild(li)
-    })
-  }
-
-  var update = function () {
-    if (running && !paused) {
-      if (seconds % (set_minutes * 60) === 0) {
-        resetSeconds()
-        pause('Continue')
-        updatePair()
-        scream()
-        cycle++
+        if (this.cycle > 0 && this.cycle % getBreakCycles() == 0) {
+          breakTime();
+        } else {
+          nextCycle();
+        }
       }
-      updateTimer(seconds)
-      seconds--
+
+      this.seconds += 1;
+      updateTimer(this.seconds);
     }
-    window.setTimeout(update, 1000)
+
+    window.setTimeout(update, 1000);
   }
 
-  var unpause = function () {
-    paused = false
-    btn_start.textContent = 'Pause'
-    div_scream.classList.add('hide')
+  function memberSwap(e) {
+    var prev = false;
+
+    if (e.type === 'click')
+      prev = e.altKey;
+    else if (e.type === 'wheel')
+      prev = e.deltaY < 0;
+    else
+      return
+
+    if (prev)
+      memberSwapPrev(e.target);
+    else
+      memberSwapNext(e.target);
   }
 
-  var pause = function (txt) {
-    paused = true
-    btn_start.textContent = (txt)? txt:'Unpause'
+  function memberSwapPrev(el) {
+    if (el.previousSibling)
+      el.parentNode.insertBefore(el, el.previousSibling);
   }
 
-  var start = function () {
-    running = true
-    cycle = 0
-    unpause()
-    resetSeconds()
+  function memberSwapNext(el) {
+    if (el.nextSibling)
+      el.parentNode.insertBefore(el.nextSibling, el);
   }
 
-  var reset = function () {
-    running = false
-    btn_start.textContent = 'Start'
-    div_scream.classList.add('hide')
-    resetSeconds()
+  function addMember(name) {
+    var ul_members = document.getElementById('members');
+    var new_li = document.createElement('li');
+    new_li.textContent = name;
+    ul_members.appendChild(new_li);
+    new_li.addEventListener('wheel', memberSwap);
+    new_li.addEventListener('click', memberSwap);
+    new_li.addEventListener('dblclick', function () {
+      removeMember(new_li);
+    });
   }
 
-  var hitStart = function () {
-    if (running) {
-      if (paused) {
-        unpause()
-      } else {
-        pause()
-      }
-    } else {
-      start()
-    }
+  function removeMember(target) {
+    var ul_members = target.parentNode;
+    ul_members.removeChild(target);
   }
 
-  btn_start.addEventListener('click', hitStart)
-
-  btn_reset.addEventListener('click', function () {
-    reset()
-  })
-
-  in_minutes.addEventListener('change', function () {
-    if (!running) {
-      resetSeconds()
-      updateTimer(seconds)
-    }
-  })
-
-  in_break.addEventListener('change', function () {
-    if (!running) {
-      set_break = parseInt(in_break.value)
-    }
-  })
-
-  in_new_member.addEventListener('change', function () {
-    var name = in_new_member.value.trim()
-    if (name) {
-      in_new_member.value = ''
-      members.push(name)
-      updateList()
-    }
-  })
-
-  reset()
-  updateTimer(seconds)
-  update()
-
-  if ('Notification' in window) {
-    Notification.requestPermission()
-      .then(function(){notify = true})
-      .catch(function(){notify = false})
-  }
-
-  var dragged
-
-  document.body.addEventListener('keyup', function (e) {
-    if (e.keyCode === 32) {
-      e.preventDefault()
-      hitStart()
-    }
-  })
-
-  document.addEventListener('dragstart', function (e) {
-    dragged = e.target
-    if (dragged.classList.contains('member_item')) {
-      name = members[memberId(dragged)]
-      e.dataTransfer.setData('text/plain', name)
-      e.dataTransfer.setDragImage(dragged, 0, 0)
-      dragged.style.opacity = 0.5
-    }
-  })
-
-  document.addEventListener('dragend', function (e) {
-    dragged = e.target
-    if (dragged.classList.contains('member_item')) {
-      dragged.style.opacity = ''
-    }
-  })
-
-  document.addEventListener('dragover', function (e) {
-    var target = e.target
-    if (target.classList.contains('member_item') && target != dragged) {
-      e.preventDefault()
-    }
-  })
-
-  document.addEventListener('dragenter', function (e) {
-    var target = e.target
-    if (target.classList.contains('member_item') && target != dragged) {
-      e.preventDefault()
-      target.style.marginBottom = '30px'
-    }
-  })
-
-  document.addEventListener('dragleave', function (e) {
-    var target = e.target
-    if (target.classList.contains('member_item') && target != dragged) {
-      target.style.marginBottom = ''
-    }
-  })
-
-  document.addEventListener('drop', function (e) {
-    e.preventDefault()
-    var target = e.target
-    if (target.classList.contains('member_item') && target != dragged) {
-      var name = e.dataTransfer.getData('text/plain')
-      var dragged_id = memberId(dragged)
-      var target_id = memberId(target)
-      if (dragged_id > target_id) {
-        members.splice(dragged_id, 1)
-        members.splice(target_id+1, 0, name)
-      } else {
-        members.splice(target_id+1, 0, name)
-        members.splice(dragged_id, 1)
-      }
-      target.style.marginBottom = ''
-      updateList()
-      updateCycle()
-    }
-  })
+  attach();
+  init();
+  update();
 }

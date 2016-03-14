@@ -32,11 +32,12 @@ body {
   z-index: 10;
 }
 
-#gang_list {
+#members {
   text-align: left;
 }
 
-#gang_list li, #in_new_member {
+#members li, 
+#new-member {
   border-radius: 10px;
   background: #fbf1c7;
   box-shadow: 0px 5px 0 rgba(0, 0, 0, 0.4);
@@ -64,7 +65,7 @@ body {
   -webkit-appearance: none;
 }
 
-#in_new_member {
+#new-member {
   border: 0;
   outline: none;
   display: block;
@@ -108,9 +109,9 @@ ul {
 #screamout {
   position: absolute;
   top: 0;
-  right: 30%;
+  left: 0;
   padding: 5vw;
-  width: 70%;
+  width: 100%;
   height: 100%;
   font-size: 6vw;
 }
@@ -147,16 +148,16 @@ ul {
   color: #83a598;
 }
 
-#gang_list li.driver {
+#members #current-driver {
   background-color: #fabd2f;
 }
 
-#gang_list li.navigator {
+#current-navigator {
   background-color: #8ec07c;
 }
 
-.driver::before {
-  content: 'D';
+#current-driver::before {
+  content: 'DRIVER';
   display: block;
   position: absolute;
   top: 0;
@@ -166,8 +167,8 @@ ul {
   color: #d79921;
 }
 
-.navigator::before {
-  content: 'N';
+#current-navigator::before {
+  content: 'NAV';
   display: block;
   position: absolute;
   top: 0;
