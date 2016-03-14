@@ -86,6 +86,17 @@ window.onload = function () {
     updateCycle(0);
   }
 
+  function notify(title, text) {
+    if (Notification.permission !== 'granted') {
+      Notification.requestPermission();
+    }
+
+    var n = new Notification(title, {body: text});
+    n.addEventListener('click', function () {
+      if (!isRunning()) document.getElementById('btn_start').click();
+    });
+  }
+
   function attach() {
     var new_member = document.getElementById('new-member');
     new_member.addEventListener('change', 
@@ -97,6 +108,20 @@ window.onload = function () {
 
     var btn_reset = document.getElementById('btn_reset');
     btn_reset.addEventListener('click', stop);
+
+    document.body.addEventListener('keyup', function(e) {
+      console.log(e);
+      switch (e.keyCode) {
+        case 32:
+          e.preventDefault();
+          document.getElementById('btn_start').click();
+          break;
+        case 46:
+          e.preventDefault();
+          document.getElementById('btn_reset').click();
+          break;
+      }
+    });
   }
 
   function unpause() {
@@ -120,6 +145,7 @@ window.onload = function () {
   function breakTime() {
     setRunning(false);
     screamBreak();
+    notify('Break Time!', '');
     updateStartButton('Back to Work', function () {
       hideScream();
       unpause();
@@ -127,8 +153,10 @@ window.onload = function () {
   }
 
   function nextCycle() {
+    var driver = nextDriver();
     setRunning(false);
-    screamNext(nextDriver());
+    screamNext(driver);
+    notify('Rotate Pair!', 'Next Driver: '+driver);
     updateStartButton('I\'m Ready', function () {
       hideScream();
       unpause();
