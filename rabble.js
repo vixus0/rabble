@@ -172,6 +172,9 @@ window.onload = function () {
           case 'l':
             loadMobbers();
             break;
+          case '?':
+            document.getElementById('help').classList.toggle('hide');
+            break;
         }
       }
     });
