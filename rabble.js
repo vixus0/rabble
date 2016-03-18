@@ -52,11 +52,12 @@ window.onload = function () {
 
   function nextDriver() {
     var ul_members = document.getElementById('members');
+    var current_el = document.getElementById('current-driver');
+    var next_el;
+    var navigator;
     if (ul_members.childNodes.length == 0) {
       return 'Mobber';
     }
-    var current_el = document.getElementById('current-driver');
-    var next_el;
     if (current_el) {
       next_el = current_el.nextSibling || ul_members.firstChild;
       current_el.removeAttribute('id');
@@ -64,6 +65,10 @@ window.onload = function () {
       next_el = ul_members.firstChild;
     }
     next_el.setAttribute('id', 'current-driver');
+    if (ul_members.childNodes.length > 1) {
+      navigator = next_el.nextSibling || ul_members.firstChild;
+      navigator.setAttribute('id', 'current-navigator');
+    }
     return next_el.textContent;
   }
 
@@ -78,7 +83,9 @@ window.onload = function () {
 
   function init() {
     var current_driver = document.getElementById('current-driver');
+    var current_navigator = document.getElementById('current-navigator');
     if (current_driver) current_driver.removeAttribute('id');
+    if (current_navigator) current_navigator.removeAttribute('id');
     rabble.seconds = 0;
     rabble.cycle = 0;
     setRunning(false);
