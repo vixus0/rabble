@@ -1,6 +1,10 @@
 window.onload = function () {
   var rabble = this;
 
+  function getStorageType() {
+    return ('localStorage' in window)? 'localStorage' : 'sessionStorage';
+  }
+
   function isRunning() { 
     return ('running' in rabble)? rabble.running : false;
   }
@@ -106,9 +110,35 @@ window.onload = function () {
     });
   }
 
+  function saveMobbers() {
+    var ul_members = document.getElementById('members'),
+        node = ul_members.firstChild,
+        i = 0;
+    storageType = getStorageType();
+    while (node) {
+      window[storageType].setItem('mobber'+i, node.textContent);
+      node = node.nextSibling;
+      i++;
+    }
+    window[storageType].setItem('mobcount', i);
+  }
+
+  function loadMobbers() {
+    storageType = getStorageType(); 
+    var count = window[storageType].getItem('mobcount');
+    if (count !== null) {
+      for (var i=0; i<count; i++) {
+        name = window[storageType].getItem('mobber'+i);
+        addMember(name);
+      }
+    }
+  }
+
   function attach() {
     var btn_reset = document.getElementById('btn_reset');
     var btn_skip = document.getElementById('btn_skip');
+    var btn_save = document.getElementById('btn_save');
+    var btn_load = document.getElementById('btn_load');
     var new_member = document.getElementById('new-member');
 
     new_member.addEventListener('change', 
@@ -120,6 +150,8 @@ window.onload = function () {
 
     btn_reset.addEventListener('click', stop);
     btn_skip.addEventListener('click', skip);
+    btn_save.addEventListener('click', saveMobbers);
+    btn_load.addEventListener('click', loadMobbers);
 
     document.body.addEventListener('keyup', function(e) {
       if (e.target === document.body) {
@@ -133,6 +165,12 @@ window.onload = function () {
             break;
           case 'k':
             document.getElementById('btn_skip').click();
+            break;
+          case 's':
+            saveMobbers();
+            break;
+          case 'l':
+            loadMobbers();
             break;
         }
       }
