@@ -1,10 +1,12 @@
 window.onload = function () {
+  var rabble = this;
+
   function isRunning() { 
-    return ('running' in this)? this.running : false;
+    return ('running' in rabble)? rabble.running : false;
   }
 
   function setRunning(bool) { 
-    this.running = bool;
+    rabble.running = bool;
   }
 
   function updateTimer(seconds) {
@@ -77,8 +79,8 @@ window.onload = function () {
   function init() {
     var current_driver = document.getElementById('current-driver');
     if (current_driver) current_driver.removeAttribute('id');
-    this.seconds = 0;
-    this.cycle = 0;
+    rabble.seconds = 0;
+    rabble.cycle = 0;
     setRunning(false);
     hideScream();
     updateStartButton('Start', start);
@@ -98,7 +100,10 @@ window.onload = function () {
   }
 
   function attach() {
+    var btn_reset = document.getElementById('btn_reset');
+    var btn_skip = document.getElementById('btn_skip');
     var new_member = document.getElementById('new-member');
+
     new_member.addEventListener('change', 
       function (e) {
         var name = e.target.value.trim()
@@ -106,20 +111,25 @@ window.onload = function () {
         e.target.value = '';
       });
 
-    var btn_reset = document.getElementById('btn_reset');
     btn_reset.addEventListener('click', stop);
+    btn_skip.addEventListener('click', skip);
 
     document.body.addEventListener('keyup', function(e) {
-      console.log(e);
-      switch (e.keyCode) {
-        case 32:
-          e.preventDefault();
-          document.getElementById('btn_start').click();
-          break;
-        case 46:
-          e.preventDefault();
-          document.getElementById('btn_reset').click();
-          break;
+      if (e.target === document.body) {
+        switch (e.keyCode) {
+          case 32: // space
+            e.preventDefault();
+            document.getElementById('btn_start').click();
+            break;
+          case 8: // backspace
+            e.preventDefault();
+            document.getElementById('btn_reset').click();
+            break;
+          case 75: // k
+            e.preventDefault();
+            document.getElementById('btn_skip').click();
+            break;
+        }
       }
     });
   }
@@ -140,6 +150,12 @@ window.onload = function () {
 
   function start() {
     nextCycle();
+  }
+
+  function skip() {
+    if (isRunning()) {
+      rabble.skip = true;
+    }
   }
 
   function breakTime() {
@@ -165,21 +181,22 @@ window.onload = function () {
 
   function update() {
     if (isRunning()) {
-      if (this.seconds > getSetSeconds()) {
-        this.cycle += 1;
-        this.seconds = 0;
+      if (rabble.seconds > getSetSeconds() || rabble.skip) {
+        rabble.cycle += 1;
+        rabble.seconds = 0;
+        rabble.skip = false;
 
-        updateCycle(this.cycle);
+        updateCycle(rabble.cycle);
 
-        if (this.cycle > 0 && this.cycle % getBreakCycles() == 0) {
+        if (rabble.cycle > 0 && rabble.cycle % getBreakCycles() == 0) {
           breakTime();
         } else {
           nextCycle();
         }
       }
 
-      this.seconds += 1;
-      updateTimer(this.seconds);
+      rabble.seconds += 1;
+      updateTimer(rabble.seconds);
     }
 
     window.setTimeout(update, 1000);

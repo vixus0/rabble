@@ -82,7 +82,7 @@ body {
   justify-content: space-between;
 }
 
-#btn_start, #btn_reset {
+#btn_start, #btn_reset, #btn_skip {
   border-radius: 20px;
   font-size: 4vw;
   padding: 1vw;
