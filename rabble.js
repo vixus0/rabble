@@ -123,17 +123,15 @@ window.onload = function () {
 
     document.body.addEventListener('keyup', function(e) {
       if (e.target === document.body) {
-        switch (e.keyCode) {
-          case 32: // space
-            e.preventDefault();
+        e.preventDefault();
+        switch (e.key) {
+          case ' ':
             document.getElementById('btn_start').click();
             break;
-          case 8: // backspace
-            e.preventDefault();
+          case 'Backspace':
             document.getElementById('btn_reset').click();
             break;
-          case 75: // k
-            e.preventDefault();
+          case 'k':
             document.getElementById('btn_skip').click();
             break;
         }
