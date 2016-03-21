@@ -155,24 +155,31 @@ window.onload = function () {
 
     document.body.addEventListener('keyup', function(e) {
       if (e.target === document.body) {
+        var key = e.key || e.code;
         e.preventDefault();
-        switch (e.key) {
+        switch (key) {
+          case 'Space':
           case ' ':
             document.getElementById('btn_start').click();
             break;
-          case 'Backspace':
+          case 'KeyR':
+          case 'r':
             document.getElementById('btn_reset').click();
             break;
+          case 'KeyK':
           case 'k':
             document.getElementById('btn_skip').click();
             break;
+          case 'KeyS':
           case 's':
             saveMobbers();
             break;
+          case 'KeyL':
           case 'l':
             loadMobbers();
             break;
-          case '?':
+          case 'KeyH':
+          case 'h':
             document.getElementById('help').classList.toggle('hide');
             break;
         }
