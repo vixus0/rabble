@@ -42,11 +42,15 @@ window.onload = function () {
     div_scream.textContent = 'Take a break, mobbers. You\'ve earned it.';
   }
 
-  function screamNext(next_driver) {
+  function screamNext(next_driver, next_navigator) {
     var div_scream = document.getElementById('screamout');
+    var content = 'ROTATE!<br>'+next_driver+', you\'re up.<br>';
+    if (next_navigator) {
+      content += ' '+next_navigator+', boss them around.'
+    }
     div_scream.classList.remove('hide');
     div_scream.classList.add('scream');
-    div_scream.textContent = 'ROTATE! '+next_driver+', you\'re up.';
+    div_scream.innerHTML = content;
   }
 
   function hideScream() {
@@ -58,7 +62,6 @@ window.onload = function () {
     var ul_members = document.getElementById('members');
     var current_el = document.getElementById('current-driver');
     var next_el;
-    var navigator;
     if (ul_members.childNodes.length == 0) {
       return 'Mobber';
     }
@@ -69,11 +72,19 @@ window.onload = function () {
       next_el = ul_members.firstChild;
     }
     next_el.setAttribute('id', 'current-driver');
-    if (ul_members.childNodes.length > 1) {
-      navigator = next_el.nextSibling || ul_members.firstChild;
-      navigator.setAttribute('id', 'current-navigator');
-    }
     return next_el.textContent;
+  }
+
+  function nextNavigator() {
+    var ul_members = document.getElementById('members');
+    var driver = document.getElementById('current-driver');
+    var new_navigator = null;
+    if (ul_members.childNodes.length > 1) {
+      var navigator = driver.nextSibling || ul_members.firstChild;
+      navigator.setAttribute('id', 'current-navigator');
+      new_navigator = navigator.textContent;
+    }
+    return new_navigator;
   }
 
   function getSetSeconds() {
@@ -224,9 +235,12 @@ window.onload = function () {
 
   function nextCycle() {
     var driver = nextDriver();
+    var navigator = nextNavigator();
+    var content = 'Driver: '+driver;
+    if (navigator) content += ', Navigator: '+navigator;
     setRunning(false);
-    screamNext(driver);
-    notify('Rotate Pair!', 'Next Driver: '+driver);
+    screamNext(driver, navigator);
+    notify('Rotate Pair!', content);
     updateStartButton('I\'m Ready', function () {
       hideScream();
       unpause();
