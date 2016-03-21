@@ -202,6 +202,7 @@ window.onload = function () {
   }
 
   function start() {
+    saveMobbers();
     nextCycle();
   }
 
