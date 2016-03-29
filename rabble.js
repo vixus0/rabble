@@ -229,7 +229,7 @@ window.onload = function () {
     notify('Break Time!', '');
     updateStartButton('Back to Work', function () {
       hideScream();
-      unpause();
+      nextCycle();
     });
   }
 
