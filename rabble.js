@@ -218,9 +218,8 @@ window.onload = function () {
   }
 
   function skip() {
-    if (isRunning()) {
-      rabble.skip = true;
-    }
+    rabble.skip = true;
+    unpause();
   }
 
   function breakTime() {
