@@ -1,10 +1,13 @@
 <title>Rabble: A mob programming timer</title>
-<meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="style.css">
 <script src="rabble.js"></script>
-<div id="help">
-  <h2 class="help-heading">Help</h2>
-  <div class="help-content">
+<div id="gang">
+  <button id="btn_save">Save</button>
+  <button id="btn_load">Load</button>
+  <span><strong>H</strong>: Display help</span>
+  <ul id="members"></ul>
+  <input id="new-member" type="text" placeholder="Add new member">
+  <div id="help" class="hide">
     <ul>
       <li>Click/scroll down to move mobber down.</li>
       <li>Alt-Click/scroll up to move mobber up.</li>
@@ -19,18 +22,13 @@
     </ul>
   </div>
 </div>
-<div id="gang">
-  <ul id="members"></ul>
-  <input id="new-member" type="text" placeholder="Add new member">
-  <button id="btn_load">💾 Load Previous</button>
-</div>
 <div id="controls">
   Cycle every <input id="in_minutes" type="number" value="8"> minutes.
   Break every <input id="in_break" type="number" value="6"> cycles.
 </div>
 <div id="cycle">Cycle #0</div>
 <div id="timer"></div>
-<div id="screamout" class="hide"></div>
+<div id="screamout"></div>
 <div id="buttons">
   <button id="btn_start">Start</button>
   <button id="btn_skip">Skip</button>

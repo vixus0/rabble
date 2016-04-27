@@ -33,7 +33,6 @@ window.onload = function () {
     btn_start.addEventListener('click', action);
     btn_start.clickListener = action;
     btn_start.textContent = text;
-    btn_start.className = text.toLowerCase();
   }
 
   function screamBreak() {
@@ -149,6 +148,7 @@ window.onload = function () {
   function attach() {
     var btn_reset = document.getElementById('btn_reset');
     var btn_skip = document.getElementById('btn_skip');
+    var btn_save = document.getElementById('btn_save');
     var btn_load = document.getElementById('btn_load');
     var new_member = document.getElementById('new-member');
 
@@ -161,6 +161,7 @@ window.onload = function () {
 
     btn_reset.addEventListener('click', stop);
     btn_skip.addEventListener('click', skip);
+    btn_save.addEventListener('click', saveMobbers);
     btn_load.addEventListener('click', loadMobbers);
 
     document.body.addEventListener('keyup', function(e) {
@@ -262,7 +263,7 @@ window.onload = function () {
       }
 
       rabble.seconds += 1;
-      updateTimer(getSetSeconds() - rabble.seconds);
+      updateTimer(rabble.seconds);
     }
 
     window.setTimeout(update, 1000);
