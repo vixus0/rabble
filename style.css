@@ -32,7 +32,6 @@ body {
   opacity: 0.6;
   line-height: 100%;
   margin-top: 0;
-  text-shadow: 3px 3px rgba(0, 0, 0, 0.5);
 }
 
 #help .help-content {
@@ -45,7 +44,6 @@ body {
 
 #help:hover .help-heading {
   opacity: 1;
-  cursor: pointer;
 }
 
 /* Mobber list */
@@ -65,25 +63,17 @@ body {
   font-size: 3em;
   opacity: 0.6;
   margin-bottom: 0.5em;
-  padding: 0.2em;
-}
-
-#members #current-driver {
-  background-color: #FFFFFF;
-  color: #3C6478;
-  font-weight: bold;
 }
 
 #new-member {
   outline: none;
   border: none;
   background: none;
-  padding: 0.2em;
+  padding-bottom: 0.2em;
   margin-bottom: 0.2em;
   font-size: 3em;
-  border-bottom: 1px solid;
+  border-bottom: 1px solid #FFFFFF;
   opacity: 0.6;
-  width: 100%;
 }
 
 #new-member:focus, #new-member:hover {
@@ -94,15 +84,14 @@ body {
 #btn_load {
   border: none;
   background: none;
+  margin: 0.5em 0;
   color: #FFFFFF;
   opacity: 0.6;
   font-size: 1em;
-  padding: 0.4em;
-  text-shadow: 3px 3px rgba(0, 0, 0, 0.5);
+  padding: 0;
 }
 
 #btn_load:hover {
-  cursor: pointer;
   opacity: 1;
 }
 
@@ -110,31 +99,8 @@ body {
 #controls {
   position: absolute;
   bottom: 0;
-  margin: 50px;
+  padding: 50px;
   font-size: 1.5em;
-  opacity: 0.6;
-  width: 40px;
-  height: 35px;
-  text-indent: 30px;
-  overflow: hidden;
-}
-
-#controls:hover {
-  opacity: 1;
-  width: auto;
-  text-indent: 0;
-  cursor: pointer;
-}
-
-#controls:before {
-  content: '⚙';
-  font-size: 2em;
-  text-shadow: 3px 3px rgba(0, 0, 0, 0.5);
-  text-indent: 0;
-  display: block;
-  float: left;
-  margin-top: -5px;
-  margin-right: 20px;
 }
 
 #controls input[type=number] {
@@ -194,7 +160,6 @@ body {
   overflow: hidden;
   width: 80px;
   height: 80px;
-  text-shadow: 5px 5px rgba(0, 0, 0, 0.5);
 }
 
 #buttons button:hover {
@@ -206,7 +171,6 @@ body {
   display: block;
   float: left;
   text-indent: 0;
-  text-align: center;
 }
 
 #btn_start[data-state=start]:before {
@@ -221,31 +185,23 @@ body {
 #btn_start[data-state=pause]:before {
   content: '❚❚';
   animation: pulse-opacity 1s infinite;
-  margin-top: -10px;
 }
 
 #btn_start[data-state="i'm ready"]:before {
   content: '👍';
-  animation: pulse-opacity 1s infinite alternate;
-  margin-top: -5px;
-}
-
-#btn_start[data-state="back to work"]:before {
-  content: '👍';
-  animation: pulse-opacity 2s infinite alternate;
-  margin-top: -5px;
+  animation: pulse-opacity 1s infinite;
 }
 
 #btn_reset:before {
   content: '◼';
   font-size: 1.8em;
-  margin-top: -55px;
+  margin-top: -45px;
 }
 
 #btn_skip:before {
   content: '⤼';
   font-size: 2.2em;
-  margin-top: -55px;
+  margin-top: -45px;
 }
 
 #screamout {
@@ -282,5 +238,10 @@ body {
 #screamout.break {
   background-color: #829256;
   color: #FFFFFF;
+  font-weight: bold;
+}
+
+#members #current-driver {
+  animation: pulse-opacity 1s infinite;
   font-weight: bold;
 }
