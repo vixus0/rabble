@@ -33,7 +33,7 @@ window.onload = function () {
     btn_start.addEventListener('click', action);
     btn_start.clickListener = action;
     btn_start.textContent = text;
-    btn_start.className = text.toLowerCase();
+    btn_start.setAttribute('data-state', text.toLowerCase());
   }
 
   function screamBreak() {

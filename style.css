@@ -29,7 +29,7 @@ body {
 
 .help-heading {
   text-align: right;
-  opacity: 0.8;
+  opacity: 0.6;
   line-height: 100%;
   margin-top: 0;
 }
@@ -61,24 +61,37 @@ body {
 
 #members li {
   font-size: 3em;
-  opacity: 0.8;
+  opacity: 0.6;
   margin-bottom: 0.5em;
-  padding: 0.1em;
 }
 
 #new-member {
-  width: 100%;
   outline: none;
   border: none;
   background: none;
-  padding: 0.1em;
-  margin: 0;
+  padding-bottom: 0.2em;
+  margin-bottom: 0.2em;
   font-size: 3em;
   border-bottom: 1px solid #FFFFFF;
-  opacity: 0.8;
+  opacity: 0.6;
 }
 
 #new-member:focus, #new-member:hover {
+  opacity: 1;
+}
+
+/* Mobber load button */
+#btn_load {
+  border: none;
+  background: none;
+  margin: 0.5em 0;
+  color: #FFFFFF;
+  opacity: 0.6;
+  font-size: 1em;
+  padding: 0;
+}
+
+#btn_load:hover {
   opacity: 1;
 }
 
@@ -109,7 +122,7 @@ body {
   right: 30%;
   padding: 50px;
   font-weight: bold;
-  opacity: 0.8;
+  opacity: 0.6;
   font-size: 1.5em;
 }
 
@@ -119,7 +132,7 @@ body {
   right: 15%;
   padding: 50px;
   font-weight: bold;
-  opacity: 0.8;
+  opacity: 0.6;
   font-size: 1.5em;
 }
 
@@ -132,29 +145,63 @@ body {
   padding: 50px;
 }
 
-#btn_start, #btn_reset, #btn_skip {
-  border-radius: 50%;
-  border: 1px solid #FFFFFF;
-  width: 160px;
-  height: 160px;
-  font-size: 3em;
-  padding: 10px;
-  flex-grow: 1;
-  margin-left: 50px;
-}
-
-#btn_load {
+#buttons button {
   border: none;
   background: none;
-  margin: 0.5em 0;
-  color: #FFFFFF;
-  opacity: 0.8;
-  font-size: 1.5em;
+  font-size: 4em;
+  flex-grow: 1;
+  margin-left: 50px;
   padding: 0;
+  color: #FFFFFF;
+  opacity: 0.6;
+  width: 80px;
+  height: 80px;
+  text-indent: 120px;
+  overflow: hidden;
+  width: 80px;
+  height: 80px;
 }
 
-#btn_load:hover {
+#buttons button:hover {
+  cursor: pointer;
   opacity: 1;
+}
+
+#buttons button:before {
+  display: block;
+  float: left;
+  text-indent: 0;
+}
+
+#btn_start[data-state=start]:before {
+  content: '►';
+}
+
+#btn_start[data-state=unpause]:before {
+  content: '►';
+  animation: pulse-opacity 1s infinite alternate;
+}
+
+#btn_start[data-state=pause]:before {
+  content: '❚❚';
+  animation: pulse-opacity 1s infinite;
+}
+
+#btn_start[data-state="i'm ready"]:before {
+  content: '👍';
+  animation: pulse-opacity 1s infinite;
+}
+
+#btn_reset:before {
+  content: '◼';
+  font-size: 1.8em;
+  margin-top: -45px;
+}
+
+#btn_skip:before {
+  content: '⤼';
+  font-size: 2.2em;
+  margin-top: -45px;
 }
 
 #screamout {
@@ -165,6 +212,11 @@ body {
   width: 100%;
   height: 100%;
   font-size: 6vw;
+}
+
+@keyframes pulse-opacity {
+  0%   { opacity: 0.4; }
+  90% { opacity: 1; }
 }
 
 @keyframes pulse-orange {
@@ -178,43 +230,18 @@ body {
 }
 
 #screamout.scream {
-  color: #fabd2f;
+  background-color: #AD2A1A;
+  color: #FFFFFF;
   font-weight: bold;
-  animation: pulse-orange 1s infinite;
 }
 
 #screamout.break {
-  color: #fabd2f;
+  background-color: #829256;
+  color: #FFFFFF;
   font-weight: bold;
-  animation: pulse-green 3s infinite alternate;
 }
 
 #members #current-driver {
-  background-color: #fabd2f;
-}
-
-#members #current-navigator {
-  background-color: #8ec07c;
-}
-
-#current-driver::before {
-  content: 'DRIVER';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1vw;
+  animation: pulse-opacity 1s infinite;
   font-weight: bold;
-  color: #d79921;
-}
-
-#current-navigator::before {
-  content: 'NAV';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1vw;
-  font-weight: bold;
-  color: #689d6a;
 }
