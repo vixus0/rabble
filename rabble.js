@@ -27,10 +27,13 @@ window.onload = function () {
 
   function updateStartButton(text, action) {
     var btn_start = document.getElementById('btn_start');
+    var div_scream = document.getElementById('screamout');
     if (btn_start.clickListener) {
       btn_start.removeEventListener('click', btn_start.clickListener);
+      div_scream.removeEventListener('click', btn_start.clickListener);
     }
     btn_start.addEventListener('click', action);
+    div_scream.addEventListener('click', action);
     btn_start.clickListener = action;
     btn_start.textContent = text;
     btn_start.setAttribute('data-state', text.toLowerCase());
@@ -45,10 +48,8 @@ window.onload = function () {
 
   function screamNext(next_driver, next_navigator) {
     var div_scream = document.getElementById('screamout');
-    var content = 'ROTATE!<br>'+next_driver+', you\'re up.<br>';
-    if (next_navigator) {
-      content += ' '+next_navigator+', boss them around.'
-    }
+    var content = 'ROTATE!<br>'+next_driver+', you\'re up.<br>'
+                + ' Click anywhere to continue.';
     div_scream.classList.remove('hide');
     div_scream.classList.add('scream');
     div_scream.innerHTML = content;
