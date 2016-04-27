@@ -13,16 +13,24 @@ window.onload = function () {
     rabble.running = bool;
   }
 
+  function updateProgress(ratio) {
+    var div_prog = document.getElementById('progress');
+    div_prog.firstChild.style.transform = 'scale('+ratio+', 1)';
+  }
+
   function updateTimer(seconds) {
-    var div_timer = document.getElementById('timer');
-    var mins = Math.floor(seconds / 60);
-    var secs = seconds % 60;
+    var div_timer = document.getElementById('messages');
+    var cycle_time = getSetSeconds();
+    var remain = cycle_time - seconds;
+    var ratio = seconds / cycle_time;
+    var mins = Math.floor(remain / 60);
+    var secs = remain % 60;
     secs = (secs < 10)? '0'+secs : secs;
     div_timer.textContent = mins + ':' + secs;
+    updateProgress(ratio);
   }
 
   function updateCycle(cycle) {
-    document.getElementById('cycle').textContent = 'Cycle #' + cycle;
   }
 
   function updateStartButton(text, action) {
@@ -36,26 +44,25 @@ window.onload = function () {
   }
 
   function screamBreak() {
-    var div_scream = document.getElementById('screamout');
+    var div_scream = document.getElementById('messages');
     div_scream.classList.remove('hide');
     div_scream.classList.add('break');
     div_scream.textContent = 'Take a break, mobbers. You\'ve earned it.';
   }
 
   function screamNext(next_driver, next_navigator) {
-    var div_scream = document.getElementById('screamout');
+    var div_scream = document.getElementById('messages');
     var content = 'ROTATE!<br>'+next_driver+', you\'re up.<br>';
     if (next_navigator) {
       content += ' '+next_navigator+', boss them around.'
     }
-    div_scream.classList.remove('hide');
-    div_scream.classList.add('scream');
+    div_scream.classList.add('countdown');
     div_scream.innerHTML = content;
   }
 
   function hideScream() {
-    document.getElementById('screamout').classList.remove('break', 'scream');
-    document.getElementById('screamout').classList.add('hide');
+    document.getElementById('messages').classList.remove('break', 'countdown');
+    document.getElementById('messages').classList.add('hide');
   }
 
   function nextDriver() {
@@ -108,6 +115,7 @@ window.onload = function () {
     updateStartButton('Start', start);
     updateTimer(0);
     updateCycle(0);
+    window.clearTimeout(rabble.countdown);
   }
 
   function notify(title, text) {
@@ -148,8 +156,6 @@ window.onload = function () {
   function attach() {
     var btn_reset = document.getElementById('btn_reset');
     var btn_skip = document.getElementById('btn_skip');
-    var btn_save = document.getElementById('btn_save');
-    var btn_load = document.getElementById('btn_load');
     var new_member = document.getElementById('new-member');
 
     new_member.addEventListener('change', 
@@ -161,8 +167,6 @@ window.onload = function () {
 
     btn_reset.addEventListener('click', stop);
     btn_skip.addEventListener('click', skip);
-    btn_save.addEventListener('click', saveMobbers);
-    btn_load.addEventListener('click', loadMobbers);
 
     document.body.addEventListener('keyup', function(e) {
       if (e.target === document.body) {
@@ -199,13 +203,18 @@ window.onload = function () {
   }
 
   function unpause() {
+    hideScream();
     setRunning(true);
     updateStartButton('Pause', pause);
+    document.getElementById('progress').firstChild.classList.add('animate');
+    document.getElementById('progress').firstChild.classList.remove('countdown');
+    window.clearTimeout(rabble.countdown);
   }
 
   function pause() {
     setRunning(false);
     updateStartButton('Unpause', unpause);
+    document.getElementById('progress').firstChild.classList.remove('animate');
   }
 
   function stop() {
@@ -241,13 +250,30 @@ window.onload = function () {
     screamNext(driver, navigator);
     notify('Rotate Pair!', content);
     updateStartButton('I\'m Ready', function () {
-      hideScream();
       unpause();
     });
+    nextCycleCountdown(15);
+  }
+
+  function nextCycleCountdown(secs) {
+     var div_prog = document.getElementById('progress');
+     var ratio = (16 - secs) / 15.0;
+     div_prog.firstChild.classList.add('countdown');
+     secs -= 1;
+
+     if (secs == 0) {
+       unpause();
+     } else {
+       console.log(ratio);
+       updateProgress(ratio);
+       rabble.countdown = window.setTimeout(nextCycleCountdown, 1000, secs);
+     }
   }
 
   function update() {
     if (isRunning()) {
+      updateTimer(rabble.seconds);
+
       if (rabble.seconds > getSetSeconds() || rabble.skip) {
         rabble.cycle += 1;
         rabble.seconds = 0;
@@ -263,7 +289,6 @@ window.onload = function () {
       }
 
       rabble.seconds += 1;
-      updateTimer(rabble.seconds);
     }
 
     window.setTimeout(update, 1000);

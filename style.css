@@ -9,175 +9,150 @@ html {
 
 body {
   font-family: 'Helvetica', 'Open Sans', sans-serif;
-  background: #458588;
-  color: #282828;
+  background-color: #282828;
+  color: #F8F8F8;
   padding: 0;
   margin: 0;
-}
-
-#timer {
-  padding: 3vw;
-  color: #83a598;
-  font-size: 20vw;
-  line-height: 60%;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
 }
 
 #gang {
-  float: right;
-  width: 30%;
+  flex: auto;
+  display: flex;
+  flex-flow: row;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
   height: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 3vw;
-  z-index: 10;
+}
+
+.column {
+  width: 300px;
 }
 
 #members {
-  text-align: left;
   list-style: none;
   margin: 0;
   padding: 0;
+  font-size: 1.2em;
 }
 
-#members li, 
+#members li {
+  border-radius: 20px;
+  background-color: #383838;
+  padding: 0.2em 0.5em;
+  margin-bottom: 1em;
+  text-align: center;
+}
+
+#members li#current-driver {
+  background-color: #DC9656;
+}
+
+#messages {
+  flex: auto;
+  flex-grow: 1;
+  width: 100%;
+  text-align: center;
+  font-size: 5em;
+}
+
+#messages.countdown {
+  color: #AB4642;
+  animation: pulse 0.5s infinite;
+}
+
+#messages.break {
+  color: #A1B56C;
+  animation: pulse 2s infinite alternate;
+}
+
 #new-member {
-  border-radius: 10px;
-  background: #fbf1c7;
-  box-shadow: 0px 5px 0 rgba(0, 0, 0, 0.4);
-  padding: 1vw;
-  font-size: 20px;
-  margin-bottom: 10px;
-  position: relative;
+  border: none;
+  outline: none;
+  border-radius: 20px;
+  font-size: 1em;
+  padding: 0.2em 0.5em;
+  width: 300px;
+  text-align: center;
 }
 
 #controls {
-  padding: 3vw;
-  font-size: 2vw;
+  padding: 2em;
+  text-align: right;
 }
 
-#controls input[type=number] {
-  border: 0;
-  outline: 0;
-  background: none;
-  border-bottom: 3px solid #282828;
-  font-size: inherit;
-  width: 8vw;
-  text-align: center;
-  color: #ebdbb2;
-  -moz-appearance: textfield;
-  -webkit-appearance: none;
+#controls label {
+  border-radius: 10px 0 0 10px;
+  background-color: #585858;
+  font-size: 1em;
+  padding: 0.4em;
+  margin-left: 2em;
 }
 
-#new-member {
-  border: 0;
-  margin: 1vw 0;
+#controls input {
+  border: none;
+  border-radius: 0 10px 10px 0;
+  background-color: #E8E8E8;
   outline: none;
-  display: block;
-  background: #b16286;
-  color: #ebdbb2;
-  width: 100%;
+  margin: 0;
+  padding: 0.15em;
+  font-size: 1.2em;
+  vertical-align: middle;
+  width: 2em;
 }
 
 #buttons {
-  position: absolute;
-  bottom: 0;
-  width: 70%;
   display: flex;
-  justify-content: space-between;
+  flex-flow: row;
+  height: 10%;
 }
 
-#btn_start, #btn_reset, #btn_skip {
-  border-radius: 20px;
-  font-size: 4vw;
-  padding: 1vw;
-  flex-grow: 1;
-  margin: 3vw;
-}
-
-#btn_save, #btn_load {
-  border-radius: 10px;
-  font-size: 1vw;
-  padding: 0.5vw;
-  margin: 1vw;
+#buttons button {
+  flex: auto;
+  font-size: 3em;
+  padding: 0 0.5em;
+  border: none;
 }
 
 #btn_start {
-  background: #b8bb26;
-  border-color: #b8bb26;
+  background-color: #A1B56C;
+}
+
+#btn_skip {
+  background-color: #7CAFC2;
 }
 
 #btn_reset {
-  background: #fb4934;
-  border-color: #fb4934;
+  background-color: #BA8BAF;
 }
 
-#screamout {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 5vw;
-  width: 100%;
+#progress {
+  height: 10%;
+  background-color: #585858;
+}
+
+#progress .bar {
   height: 100%;
-  font-size: 6vw;
+  width: 100%;
+  background-color: #F8F8F8;
+  transform: scale(0, 1);
+  transform-origin: left;
+  transition: transform 1s;
 }
 
-.hide {
-  display: none;
+#progress .countdown {
+  background-color: #AB4642;
+  animation: pulse 0.5s infinite;
 }
 
-@keyframes pulse-orange {
-  0%   { background-color: #fe8019; }
-  100% { background-color: #d65d0e; }
+#progress .animate {
+  animation: pulse 1s infinite alternate;
 }
 
-@keyframes pulse-green {
-  0%   { background-color: #98971a; }
-  100% { background-color: #b8bb26; }
-}
-
-#screamout.scream {
-  color: #fabd2f;
-  font-weight: bold;
-  animation: pulse-orange 1s infinite;
-}
-
-#screamout.break {
-  color: #fabd2f;
-  font-weight: bold;
-  animation: pulse-green 3s infinite alternate;
-}
-
-#cycle {
-  padding: 3vw;
-  font-size: 5vw;
-  color: #83a598;
-}
-
-#members #current-driver {
-  background-color: #fabd2f;
-}
-
-#members #current-navigator {
-  background-color: #8ec07c;
-}
-
-#current-driver::before {
-  content: 'DRIVER';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1vw;
-  font-weight: bold;
-  color: #d79921;
-}
-
-#current-navigator::before {
-  content: 'NAV';
-  display: block;
-  position: absolute;
-  top: 0;
-  right: 0;
-  padding: 1vw;
-  font-weight: bold;
-  color: #689d6a;
+@keyframes pulse {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
 }
