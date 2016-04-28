@@ -95,12 +95,16 @@ window.onload = function () {
   }
 
   function getSetSeconds() {
-    var set_minutes = parseFloat(document.getElementById('in_minutes').value) || 10.0;
+    var set_minutes = parseFloat(document.getElementById('in_minutes').value) || 8.0;
     return Math.floor(set_minutes * 60);
   };
 
   function getBreakCycles() {
     return parseInt(document.getElementById('in_break').value) || 6;
+  };
+
+  function getCountdownSecs() {
+    return parseInt(document.getElementById('in_countdown').value) || 10;
   };
 
   function init() {
@@ -143,7 +147,7 @@ window.onload = function () {
   }
 
   function loadMobbers() {
-    storageType = getStorageType(); 
+    storageType = getStorageType();
     var count = window[storageType].getItem('mobcount');
     if (count !== null) {
       for (var i=0; i<count; i++) {
@@ -158,7 +162,7 @@ window.onload = function () {
     var btn_skip = document.getElementById('btn_skip');
     var new_member = document.getElementById('new-member');
 
-    new_member.addEventListener('change', 
+    new_member.addEventListener('change',
       function (e) {
         var name = e.target.value.trim()
         if (name) addMember(name);
