@@ -5,29 +5,54 @@ window.onload = function () {
     return ('localStorage' in window)? 'localStorage' : 'sessionStorage';
   }
 
-  function isRunning() { 
+  function isRunning() {
     return ('running' in rabble)? rabble.running : false;
   }
 
-  function setRunning(bool) { 
+  function setRunning(bool) {
     rabble.running = bool;
   }
 
-  function updateProgress(ratio) {
-    var div_prog = document.getElementById('progress');
-    div_prog.firstChild.style.transform = 'scale('+ratio+', 1)';
+  function updateProgress(secs, class_name) {
+    var progress = document.getElementById('progress');
+    var bar = progress.firstChild;
+
+    progress.className = '';
+
+    if (class_name) {
+      progress.classList.add(class_name);
+    }
+
+    if (bar) {
+      bar.style.setProperty('animation', secs+'s linear progress');
+      bar.style.setProperty('animation-play-state', 'running');
+    }
+  }
+
+  function pauseProgress() {
+    var progress = document.getElementById('progress');
+    var bar = progress.firstChild;
+    bar.style.setProperty('animation-play-state', 'paused');
+    progress.classList.remove('cycle');
+  }
+
+  function resetProgress() {
+    var progress = document.getElementById('progress');
+    var bar = progress.firstChild;
+    var clone = bar.cloneNode(false);
+    clone.style.removeProperty('animation');
+    progress.className = '';
+    progress.replaceChild(clone, bar);
   }
 
   function updateTimer(seconds) {
     var div_timer = document.getElementById('messages');
     var cycle_time = getSetSeconds();
     var remain = cycle_time - seconds;
-    var ratio = seconds / cycle_time;
     var mins = Math.floor(remain / 60);
     var secs = remain % 60;
     secs = (secs < 10)? '0'+secs : secs;
     div_timer.textContent = mins + ':' + secs;
-    updateProgress(ratio);
   }
 
   function updateCycle(cycle) {
@@ -119,6 +144,7 @@ window.onload = function () {
     updateStartButton('Start', start);
     updateTimer(0);
     updateCycle(0);
+    resetProgress();
     window.clearTimeout(rabble.countdown);
   }
 
@@ -210,15 +236,14 @@ window.onload = function () {
     hideScream();
     setRunning(true);
     updateStartButton('Pause', pause);
-    document.getElementById('progress').firstChild.classList.add('animate');
-    document.getElementById('progress').firstChild.classList.remove('countdown');
+    updateProgress(getSetSeconds(), 'cycle');
     window.clearTimeout(rabble.countdown);
   }
 
   function pause() {
     setRunning(false);
     updateStartButton('Unpause', unpause);
-    document.getElementById('progress').firstChild.classList.remove('animate');
+    pauseProgress();
   }
 
   function stop() {
@@ -249,6 +274,7 @@ window.onload = function () {
     var driver = nextDriver();
     var navigator = nextNavigator();
     var content = 'Driver: '+driver;
+    var countdown = getCountdownSecs();
     if (navigator) content += ', Navigator: '+navigator;
     setRunning(false);
     screamNext(driver, navigator);
@@ -256,20 +282,17 @@ window.onload = function () {
     updateStartButton('I\'m Ready', function () {
       unpause();
     });
-    nextCycleCountdown(15);
+    nextCycleCountdown(countdown);
+    resetProgress();
+    updateProgress(countdown, 'countdown');
   }
 
   function nextCycleCountdown(secs) {
-     var div_prog = document.getElementById('progress');
-     var ratio = (16 - secs) / 15.0;
-     div_prog.firstChild.classList.add('countdown');
      secs -= 1;
-
      if (secs == 0) {
+       resetProgress();
        unpause();
      } else {
-       console.log(ratio);
-       updateProgress(ratio);
        rabble.countdown = window.setTimeout(nextCycleCountdown, 1000, secs);
      }
   }
