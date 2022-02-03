@@ -1,5 +1,7 @@
 window.onload = function () {
-  var rabble = this;
+  let rabble = this;
+  let switchSound;
+  let breakSound;
 
   function getStorageType() {
     return ('localStorage' in window)? 'localStorage' : 'sessionStorage';
@@ -14,8 +16,8 @@ window.onload = function () {
   }
 
   function updateProgress(secs, class_name) {
-    var progress = document.getElementById('progress');
-    var bar = progress.firstChild;
+    let progress = document.getElementById('progress');
+    let bar = progress.firstChild;
 
     progress.className = '';
 
@@ -28,29 +30,44 @@ window.onload = function () {
       bar.style.setProperty('animation-play-state', 'running');
     }
   }
+  
+  function Sound(src) {
+    this.sound = document.createElement("audio"); 
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    setTimeout(this.play = function () {
+      this.sound.play();
+    }, 5000);
+    this.stop = function () {
+      this.sound.pause(); 
+    }
+  }
 
   function pauseProgress() {
-    var progress = document.getElementById('progress');
-    var bar = progress.firstChild;
+    let progress = document.getElementById('progress');
+    let bar = progress.firstChild;
     bar.style.setProperty('animation-play-state', 'paused');
     progress.classList.remove('cycle');
   }
 
   function resetProgress() {
-    var progress = document.getElementById('progress');
-    var bar = progress.firstChild;
-    var clone = bar.cloneNode(false);
+    let progress = document.getElementById('progress');
+    let bar = progress.firstChild;
+    let clone = bar.cloneNode(false);
     clone.style.removeProperty('animation');
     progress.className = '';
     progress.replaceChild(clone, bar);
   }
 
   function updateTimer(seconds) {
-    var div_timer = document.getElementById('messages');
-    var cycle_time = getSetSeconds();
-    var remain = cycle_time - seconds;
-    var mins = Math.floor(remain / 60);
-    var secs = remain % 60;
+    let div_timer = document.getElementById('messages');
+    let cycle_time = getSetSeconds();
+    let remain = cycle_time - seconds;
+    let mins = Math.floor(remain / 60);
+    let secs = remain % 60;
     secs = (secs < 10)? '0'+secs : secs;
     div_timer.textContent = mins + ':' + secs;
   }
@@ -59,7 +76,7 @@ window.onload = function () {
   }
 
   function updateStartButton(text, action) {
-    var btn_start = document.getElementById('btn_start');
+    let btn_start = document.getElementById('btn_start');
     if (btn_start.clickListener) {
       btn_start.removeEventListener('click', btn_start.clickListener);
     }
@@ -69,15 +86,17 @@ window.onload = function () {
   }
 
   function screamBreak() {
-    var div_scream = document.getElementById('messages');
+    breakSound.play();
+    let div_scream = document.getElementById('messages');
     div_scream.classList.remove('hide');
     div_scream.classList.add('break');
     div_scream.textContent = 'Take a break, mobbers. You\'ve earned it.';
   }
 
   function screamNext(next_driver, next_navigator) {
-    var div_scream = document.getElementById('messages');
-    var content = 'ROTATE!<br>'+next_driver+', you\'re up.<br>';
+    switchSound.play();
+    let div_scream = document.getElementById('messages');
+    let content = 'ROTATE!<br>'+next_driver+', you\'re up.<br>';
     if (next_navigator) {
       content += ' '+next_navigator+', boss them around.'
     }
@@ -91,10 +110,10 @@ window.onload = function () {
   }
 
   function nextDriver() {
-    var ul_members = document.getElementById('members');
-    var current_el = document.getElementById('current-driver');
-    var next_el;
-    if (ul_members.childNodes.length == 0) {
+    let ul_members = document.getElementById('members');
+    let current_el = document.getElementById('current-driver');
+    let next_el;
+    if (ul_members.childNodes.length === 0) {
       return 'Mobber';
     }
     if (current_el) {
@@ -108,11 +127,11 @@ window.onload = function () {
   }
 
   function nextNavigator() {
-    var ul_members = document.getElementById('members');
-    var driver = document.getElementById('current-driver');
-    var new_navigator = null;
+    let ul_members = document.getElementById('members');
+    let driver = document.getElementById('current-driver');
+    let new_navigator = null;
     if (ul_members.childNodes.length > 1) {
-      var navigator = driver.nextSibling || ul_members.firstChild;
+      let navigator = driver.nextSibling || ul_members.firstChild;
       navigator.setAttribute('id', 'current-navigator');
       new_navigator = navigator.textContent;
     }
@@ -120,21 +139,21 @@ window.onload = function () {
   }
 
   function getSetSeconds() {
-    var set_minutes = parseFloat(document.getElementById('in_minutes').value) || 8.0;
+    let set_minutes = parseFloat(document.getElementById('in_minutes').value) || 8.0;
     return Math.floor(set_minutes * 60);
-  };
+  }
 
   function getBreakCycles() {
     return parseInt(document.getElementById('in_break').value) || 6;
-  };
+  }
 
   function getCountdownSecs() {
     return parseInt(document.getElementById('in_countdown').value) || 10;
-  };
+  }
 
   function init() {
-    var current_driver = document.getElementById('current-driver');
-    var current_navigator = document.getElementById('current-navigator');
+    let current_driver = document.getElementById('current-driver');
+    let current_navigator = document.getElementById('current-navigator');
     if (current_driver) current_driver.removeAttribute('id');
     if (current_navigator) current_navigator.removeAttribute('id');
     rabble.seconds = 0;
@@ -153,17 +172,17 @@ window.onload = function () {
       Notification.requestPermission();
     }
 
-    var n = new Notification(title, {body: text});
+    let n = new Notification(title, {body: text});
     n.addEventListener('click', function () {
       if (!isRunning()) document.getElementById('btn_start').click();
     });
   }
 
   function saveMobbers() {
-    var ul_members = document.getElementById('members'),
+    let ul_members = document.getElementById('members'),
         node = ul_members.firstChild,
         i = 0;
-    storageType = getStorageType();
+    let storageType = getStorageType();
     while (node) {
       window[storageType].setItem('mobber'+i, node.textContent);
       node = node.nextSibling;
@@ -173,10 +192,10 @@ window.onload = function () {
   }
 
   function loadMobbers() {
-    storageType = getStorageType();
-    var count = window[storageType].getItem('mobcount');
+    let storageType = getStorageType();
+    let count = window[storageType].getItem('mobcount');
     if (count !== null) {
-      for (var i=0; i<count; i++) {
+      for (let i=0; i<count; i++) {
         name = window[storageType].getItem('mobber'+i);
         addMember(name);
       }
@@ -184,13 +203,15 @@ window.onload = function () {
   }
 
   function attach() {
-    var btn_reset = document.getElementById('btn_reset');
-    var btn_skip = document.getElementById('btn_skip');
-    var new_member = document.getElementById('new-member');
-
+    let btn_reset = document.getElementById('btn_reset');
+    let btn_skip = document.getElementById('btn_skip');
+    let new_member = document.getElementById('new-member');
+    switchSound = new Sound("sounds/clockAlarm.wav");
+    breakSound = new Sound("sounds/breakAlarm.wav");
+                           
     new_member.addEventListener('change',
       function (e) {
-        var name = e.target.value.trim()
+        let name = e.target.value.trim()
         if (name) addMember(name);
         e.target.value = '';
       });
@@ -200,7 +221,7 @@ window.onload = function () {
 
     document.body.addEventListener('keyup', function(e) {
       if (e.target === document.body) {
-        var key = e.key || e.code;
+        let key = e.key || e.code;
         e.preventDefault();
         switch (key) {
           case 'Space':
@@ -271,15 +292,16 @@ window.onload = function () {
   }
 
   function nextCycle() {
-    var driver = nextDriver();
-    var navigator = nextNavigator();
-    var content = 'Driver: '+driver;
-    var countdown = getCountdownSecs();
+    let driver = nextDriver();
+    let navigator = nextNavigator();
+    let content = 'Driver: '+driver;
+    let countdown = getCountdownSecs();
     if (navigator) content += ', Navigator: '+navigator;
     setRunning(false);
     screamNext(driver, navigator);
     notify('Rotate Pair!', content);
     updateStartButton('I\'m Ready', function () {
+      switchSound.stop();
       unpause();
     });
     nextCycleCountdown(countdown);
@@ -289,7 +311,7 @@ window.onload = function () {
 
   function nextCycleCountdown(secs) {
      secs -= 1;
-     if (secs == 0) {
+     if (secs === 0) {
        resetProgress();
        unpause();
      } else {
@@ -308,7 +330,7 @@ window.onload = function () {
 
         updateCycle(rabble.cycle);
 
-        if (rabble.cycle > 0 && rabble.cycle % getBreakCycles() == 0) {
+        if (rabble.cycle > 0 && rabble.cycle % getBreakCycles() === 0) {
           breakTime();
         } else {
           nextCycle();
@@ -322,7 +344,7 @@ window.onload = function () {
   }
 
   function memberSwap(e) {
-    var prev = false;
+    let prev = false;
 
     if (e.type === 'click')
       prev = e.altKey;
@@ -348,8 +370,8 @@ window.onload = function () {
   }
 
   function addMember(name) {
-    var ul_members = document.getElementById('members');
-    var new_li = document.createElement('li');
+    let ul_members = document.getElementById('members');
+    let new_li = document.createElement('li');
     new_li.textContent = name;
     ul_members.appendChild(new_li);
     new_li.addEventListener('wheel', memberSwap);
@@ -360,7 +382,7 @@ window.onload = function () {
   }
 
   function removeMember(target) {
-    var ul_members = target.parentNode;
+    let ul_members = target.parentNode;
     ul_members.removeChild(target);
   }
 
